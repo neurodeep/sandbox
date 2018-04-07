@@ -3,7 +3,7 @@
 // @name          Getting Started with a User Script
 // @description   Showing the current basic and recommended format for a User script.
 // @copyright     2018, neurodeep (https://openuserjs.org/users/neurodeep)
-// @license       OSI-SPDX-Short-Identifier
+// @license       MIT
 // @version       0.0.0
 // @include       https://https://www.youtube.com/watch*
 // @grant none
