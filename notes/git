@@ -1,0 +1,8 @@
+## Create repo
+
+touch README.md
+git init
+git add README.md
+git commit -m "initial commit"
+git remote add origin https://github.com/neurodeep/sandbox.git
+git push -u origin master

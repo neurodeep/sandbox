@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+## Find MySQL table
+SELECT DISTINCT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('possible_values') AND TABLE_NAME LIKE '%templat%' AND TABLE_SCHEMA='porta-billing' ORDER BY TABLE_NAME;
+SELECT DISTINCT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('possible_values') AND TABLE_SCHEMA='porta-billing' ORDER BY TABLE_NAME;
+SELECT DISTINCT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('i_cp_rule') AND TABLE_SCHEMA='porta-billing' ORDER BY TABLE_NAME;
+SELECT DISTINCT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('i_subscription') AND TABLE_SCHEMA='porta-billing' ORDER BY TABLE_NAME;
+SELECT DISTINCT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME IN ('default_action') AND TABLE_SCHEMA='porta-billing' ORDER BY TABLE_NAME;
+
+## Find MySQL hostname
+select @@hostname;
+
+## Update Mailbox Size
+UPDATE Accounts SET maxmail_size = 150000000 WHERE i_account = 7953895 LIMIT 1;
+
+## Skip mysql query and start slave
+SET GLOBAL SQL_SLAVE_SKIP_COUNTER = 1;
+START SLAVE;
+
+##Stat DSN
+[Slave]
+DSN=DBI:mysql:database=porta-billing;host=ps-H;port=3306
+[Stats]
+DSN=DBI:mysql:database=porta-billing;host=ps-G;port=3307
+
+## Report Queue
+SELECT cr.i_cr_queue, cr.i_cr_query, cr.periodical, CR.object,
+IFNULL(start_time,NOW()) AS start_time, crq.name AS name, CR.name AS report_name,
+ROUND(ABS(UNIX_TIMESTAMP(start_time) - UNIX_TIMESTAMP(NOW()))/86400) AS diff  
+FROM Custom_Report_Queue cr
+LEFT JOIN Custom_Report_Queries crq ON cr.i_cr_query = crq.i_cr_query
+LEFT JOIN Custom_Reports CR ON CR.i_custom_report = crq.i_custom_report
+WHERE ( start_time <= NOW() OR start_time IS NULL )
+AND (execution_status = 'Waiting' OR execution_status IS NULL) 
+AND suspended = 'N'
+order by start_time
+LIMIT 10

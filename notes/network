@@ -1,0 +1,195 @@
+#!/usr/bin/bash
+
+## Count calls per second
+ cat /porta_var/sipenv-208.89.104.160/log/sip.log      | perl get_radius_stats.pl | grep 1.2.3.4 | cut -c -19 | uniq -c
+zcat /porta_var/sipenv-208.89.104.160/log/sip.log.1.gz | perl get_radius_stats.pl |                cut -c -19 | uniq -c | sort -n | tail -n 50
+for ip in 104.222.99.62 209.126.67.164 5523697849 18996001799 5532684521; do zcat /porta_var/sipenv-208.89.104.160/log/sip.log.1.gz | perl get_radius_stats.pl | grep "$ip" | cut -c -19 | uniq -c > "cps_node_208.89.104.160_id_$ip.txt"; done
+
+## Check all nodes
+list=`ls | grep sipenv | tr -d '\n'`
+for node in ${list//sipenv-/ }; do
+  res=( $(grep "SENDING message to UDP:$node:5060 from UDP:$node:5060" sipenv-$node/log/sip.log | wc -l) )
+  if [[ "$res" -ne "0" ]]; then
+    echo $node $res
+  fi
+done
+
+## TCP dump
+ifconfig? lagg0
+sudo tcpdump -W 20 -v -w /var/tmp/216785.cap -C 20 -i lagg0 -s 0 'host 108.92.130.80'
+sudo tcpdump -W 10 -v -w /var/tmp/216785.cap -C 10 -i lagg0 -s 0 'host 108.92.130.80'
+sudo tcpdump -W 10 -v -w /var/tmp/221204_vendor.cap -C 10 -i em0 -s 0 'host 166.148.100.161 or host 71.92.73.62 or host 68.68.124.85'
+sudo tcpdump -W 10 -v -w /var/tmp/221204_vendor.cap -C 10 -i em0 -s 0 'host 208.89.106.125 and (host 208.89.107.91 or host 216.53.4.1 or host 66.33.147.149)'
+sudo tcpdump -W 10 -v -w /var/tmp/220598_vitelity.cap -C 10 -i em0 -s 0 'host 66.241.99.233'
+
+#
+sudo tcpdump -W 10 -v -w /var/tmp/277949.cap -C 10 -i em0 -s 0 'host 194.54.172.8 and host 108.59.2.133'
+#
+
+# RTP
+sudo tcpdump -W 10 -v -w /var/tmp/vocapex286185.cap -i bond1 -s 0 'host 207.239.159.171'
+
+
+sudo tcpdump -W 10 -v -w /var/tmp/319245.cap -i bond1 -s 0 'host 50.192.138.66 or net 64.16.248.0/24'
+199.180.223.109
+
+
+# SIP
+sudo tcpdump -W 10 -v -w /var/tmp/vocapex286185.sip.cap -C 10 -i bond1 -s 0 'host 207.239.159.171 and host 199.180.220.245'
+
+sudo tcpdump -W 10 -v -w /var/tmp/287186.cap -C 10 -i bond1 -s 0 'host 99.27.105.20 and (host 208.89.106.178 or host 208.89.106.177)'
+sudo tcpdump -W 10 -v -w /var/tmp/tt277832.cap -C 10 -i bond1 -s 0 'host 50.75.146.82'
+
+rtp: tcpdump -W 10 -v -w /var/tmp/tt260623_media.cap -C 10 -i em0 -s 0 'net 195.136.50.0/24'
+
+psj: tcpdump -W 10 -v -w /var/tmp/webrtc_sip.cap -C 10 -i bond1 -s 0 'host 208.89.104.13 and host 208.89.104.25 or host 208.89.107.91'
+
+sudo tcpdump -W 10 -v -w /var/tmp/tt265275.cap -C 10 -i eth0 -s 0 'host 162.210.42.238 or host 162.210.42.188'
+
+sudo tcpdump -W 10 -v -w /var/tmp/275388.cap -C 10 -i em0 -s 0 "host 24.114.53.42"
+
+## Check ports
+netstat -plane | grep 208.89.106.125
+
+## Apply B2BUA value
+ssh psd
+telnet <sip_ip> 5064
+help
+show conf [<option_name>]
+set conf <option_name> <value>
+q
+
+['127.0.0.1', '208.89.106.41', '208.89.107.150', '208.89.107.142', '208.89.107.81', '199.180.223.108']
+set conf ccm_allowed_addresses 127.0.0.1,208.89.106.41,208.89.107.150,208.89.107.142,208.89.107.81,199.180.223.108
+
+## Disconnect a call via b2bua
+telnet <sip_ip> 5064
+
+## BLF cleanup
+DELETE FROM active_watchers WHERE i_env = 74 LIMIT 2500;
+
+## Check sessions
+nc -U ../run/sippy-208.89.105.157_5089.sock
+nc -U ../run/sippy-208.89.105.157_5090.sock
+nc -U ../run/sippy-208.89.104.161_5090.sock
+
+## Add Sippy IP
+# add node IP
+vim /porta_var/telinta/porta-sip-additions/scripts/sippy_iptables_rules.sh
+# generate rules
+sudo /porta_var/telinta/porta-sip-additions/scripts/sippy_iptables_rules.sh
+# check rules
+diff -aur /var/tmp/iptables.rules.old /var/tmp/iptables.rules.new
+# apply rules
+sudo bash /var/tmp/iptables.rules.new
+# check NAT rules for IP
+sudo iptables -n -v -L -t nat | grep 208.89.105.157
+sudo iptables -n -v -L -t nat | grep 208.89.104.161
+sudo iptables -n -v -L -t nat | grep 208.89.104.249
+sudo iptables -n -v -L -t nat | grep 199.180.220.29
+sudo iptables -n -v -L -t nat | grep 162.209.1.245
+sudo iptables -n -v -L -t nat | grep 216.48.184.50
+
+
+## IP is not reachable from outside
+/porta_var/sipenv-208.89.104.241/etc/rc.d/sip.sh status
+ifconfig | grep -C4 208.89.104.241
+sudo /etc/sysconfig/network-scripts/ifdown bond1:83
+sudo /etc/sysconfig/network-scripts/ifup bond1:83
+/porta_var/sipenv-208.89.104.241/etc/rc.d/sip.sh status
+
+sudo arping -I bond1 -c 3 199.180.220.45
+sudo arping -A -c 1 -I bond1 199.180.220.93
+
+## Block SSH/Telnet haxxorz
+sudo grep sshd /var/log/secure | rev | cut -d ' ' -f 1 | rev | uniq -c | sort -n | tail
+sudo grep 'Nov 24' /var/log/secure| grep sshd | rev | cut -d ' ' -f 1 | rev | uniq -c | sort -n | tail
+
+sudo iptables -A BLOCKED -s '113.136.0.0/13, 123.64.0.0/11, 114.46.0.0/16, 114.32.0.0/12, 223.220.0.0/15, 61.220.0.0/14, 61.224.0.0/16, 60.0.0.0/13, 113.64.0.0/11, 144.52.0.0/16' -p tcp --dport 23 -j DROP -m comment --comment "asian telnet hackers, tt255966"
+
+## Allow IP
+sudo iptables -I INPUT -s 208.89.107.134 -j ACCEPT -p tcp --dport 3306 -m comment --comment "allow psm connection"
+
+## Block IP
+sudo iptables -A SIPATTACKS -s 209.126.111.22 -j DROP -m comment --comment "TTs #271342, #271333, #270446"
+sudo iptables -A SIPATTACKS -s '108.61.140.144/29' -j DROP -m comment --comment "TT #304008"
+
+sudo iptables -A INPUT -s 83.136.86.55 -j DROP -m comment --comment "nikolaym, 03 May 17, some heavy site scanner"
+
+sudo iptables -A SIPATTACKS -s '199.255.208.0/21,37.8.80.0/20' -d '208.89.104.36,208.89.104.37,208.89.107.205,208.89.107.206' -j DROP -m comment --comment "Requested by IFX TT#288717"
+sudo iptables -A SIPATTACKS -d '208.89.104.36,208.89.104.37,208.89.107.205,208.89.107.206' -j DROP -p udp -m udp --dport 5060 -m string --string "eyeBeam" --algo kmp --from 100 --to 1500 -m comment --comment "Requested by IFX TT#288717"
+
+sudo iptables -A SIPATTACKS -p udp -m udp --dst 199.180.220.253 -m string --string "eyeBeam" --algo kmp --from 100 --to 1500 -j DROP -m comment --comment "block UA TT270312"
+
+sudo iptables -A SIPATTACKS -s 77.68.37.207 -d 208.89.104.229 -j DROP -m comment --comment "TT#270446"
+sudo iptables -A SIPATTACKS -s 200.76.111.61 -d 208.89.104.101 -j DROP -m comment --comment "TT#222127"
+sudo iptables -A SIPATTACKS -s '174.120.122.114,174.120.95.194' -d 208.89.104.237 -p udp -m length --length 200 -j DROP -m comment --comment "drop malformed packets"
+sudo iptables -I OUTPUT -d 64.140.96.44 -j REJECT -m comment --comment "Block 3ng RTP proxy (tt240513)"
+sudo iptables -A SIPATTACKS -s '185.94.189.128/27' -d 208.89.104.229 -j DROP -m comment --comment "TT#268711"
+
+sudo iptables -A SIPATTACKS -s '63.110.102.248, 63.110.102.249, 63.77.76.244, 63.77.76.245, 63.77.76.248, 65.211.120.237, 65.211.120.245, 65.243.172.236, 65.243.172.245' -d 208.89.104.65 -j DROP -m comment --comment "TT#285081 - call flood"
+
+## Block UA
+sudo iptables -A SIPATTACKS -p udp -m udp --dport 5060 -m string --string "sipcli" --algo kmp --from 100 --to 1500 -m comment --comment "drop sipcli for all envs" -j DROP 
+sudo iptables -A SIPATTACKS -p udp -m udp --dport 5061 -m string --string "sipcli" --algo kmp --from 100 --to 1500 -m comment --comment "drop sipcli for all envs" -j DROP 
+sudo iptables -A SIPATTACKS -p udp -m udp -m multiport --destination-ports 5060:5090 -m string --string "sipcli" --algo kmp --from 100 --to 1500 -m comment --comment "drop sipcli for all envs" -j DROP 
+
+## Check IP
+sudo iptables -L -n -v | grep 208.89.106.185
+sudo iptables -L -n -v --line-numbers | grep 104.46.101.251
+sudo iptables -L -n -v --line-numbers | grep 208.89.105.157
+sudo iptables -L -n -v --line-numbers
+
+## Remove by chain and line
+sudo iptables -L SIPATTACKS -n -v --line-numbers | grep 208.89.104.65
+sudo iptables -D INPUT 2
+
+
+
+sudo iptables -t nat -I WHOLESALETRAFFIC -s 82.207.22.100 -d 208.89.104.25 -p udp --dport 5060 -j DNAT --to-destination 208.89.104.25:5090
+
+## SIP Protector - sip-protector.sh
+
+sudo iptables -A SIPATTACKS -p udp -d "208.89.104.25" \
+-m udp --dport 5060 \
+-m string --string "REGISTER sip:" --algo bm --to 65 \
+-m hashlimit --hashlimit-above 100/minute --hashlimit-burst 51 --hashlimit-mode srcip --hashlimit-name reg-.104.25-udp \
+-j DROP
+
+# create chain
+iptables -N "sipdos-208.89.104.25"
+iptables -A INPUT -d "208.89.104.25/32" -j "sipdos-208.89.104.25"
+
+# fill chain
+iptables -A sipdos-208.89.104.25 -p udp -m udp --dport 5060 \
+-m string --string "REGISTER sip:" --algo bm --to 65 \
+-m hashlimit --hashlimit-above 100/minute \
+--hashlimit-burst 51 \
+--hashlimit-mode srcip --hashlimit-name reg-.104.25-udp \
+-j DROP
+
+# remove chain
+iptables -D INPUT -d "208.89.104.25/32" -j "$id"
+iptables -F "sipdos-208.89.104.25"
+iptables -X "sipdos-208.89.104.25"
+
+
+
+
+# create chain
+iptables -N "$id"
+iptables -A INPUT -d "${IP}/32" -j "$id"
+
+# fill chain
+iptables -A "$id" -p "$proto" -m "$proto" --dport "$port" \
+-m string --string "REGISTER sip:" --algo bm --to "$OFFSET" \
+-m hashlimit --hashlimit-above ${REG_RATE}/minute \
+--hashlimit-burst $((1 + REG_RATE / 2)) \
+--hashlimit-mode srcip --hashlimit-name "reg-${IP: -7}-$proto" \
+-j "$IPT_ACTION"
+
+# remove chain
+iptables -D INPUT -d "${IP}/32" -j "$id"
+iptables -F "$id"
+iptables -X "$id"
+

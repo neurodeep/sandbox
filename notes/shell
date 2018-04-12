@@ -1,0 +1,92 @@
+#!/usr/bin/bash
+
+## Lazy SCP
+hg diff Porta/BillingProcessor/BillSoft.pm | gzip -9 | base64 > a
+base64 -d < a > b.gz
+gzip -d b.gz
+
+## Count words in a file
+for word in Ringing Trying Connected Dead Disconnected WaitRoute; do echo -n "$word "; grep ${word} nc.3000.log | wc -l; done
+
+## nmap
+nmap 192.168.1.0/24 -sn
+
+## Find
+find /tmp /var/tmp . ~/ -name foo
+find `pwd` -name skype.* -type f
+find . -type d -exec chmod 775 {} + && find . -type f -exec chmod 664 {} +
+
+## Local Servers
+php -S 0.0.0.0:8000 -t .
+python -s SimpleHTTPServer
+
+## Access remote localhost
+ssh -p 2213 kiev.telinta.com -L 8888:192.168.1.129:80
+google-chrome "http://localhost:8888/info.php"
+
+## Zip
+zip -r ~/downloads/soap-signup.zip soap-signup-php -x *svn*
+
+## RPM
+7z e porta-admin-52.0-9.el7.src.rpm -otmp && 7z x tmp/* -o* && rm -r tmp
+
+## sed httpd-error.log
+tail -f httpd-error-web.log | sed 's/.*stderr:.\(.*\),.referer.*/\1/'
+
+## drupal
+tail -f syslog | sed 's/^.*||//'
+tail -f apache2/drupal-error.log | sed 's/^.*client.*] \(.*\), referer.*/\1/'
+tail -f syslog apache2/drupal-error.log | grep '==>\|:SIM:\|trello.com' | sed 's/^.*||\(.*\)\|^.*client.*] \(.*\), referer.*/\1\2/'
+tail -f syslog apache2/drupal-error.log | grep '==>\|:SIM:\|trello.com' | sed 's/\\n/\n/g'
+
+sudo tail -f syslog apache2/drupal-error.log | grep '==>\|:SIM:\|trello.com' | sed 's/\\n/\n/g' | sed 's/^.*||\|^.*client.*] \|, referer.*$//'
+
+## pass output as arguments
+diff -aur <(echo foo) <(echo bar)
+
+## strace full grep
+sudo strace -p 22150 -s 300 2>&1 | grep -v Timeout
+
+## stop CR ## TODO
+while [ 1 ]; do sudo service call-recording stop; sleep 1; done
+if [ 1 ]; then echo yes; sleep 1; fi
+
+sudo service call-recording stop && ps auxww | grep fetcher | grep -v grep
+
+./somecommand | grep 'string' &> /dev/null
+if [ $? == 0 ]; then
+   echo "matched"
+fi
+
+#!/bin/bash
+
+echo "Warning: The script is not tested"
+echo "Press (ctrl+c) to abort or (Enter) to continue..."
+read go
+
+status=$(sudo service call-recording stop)
+
+while [[ $status != *"Stopped services: fetcher converter"* ]]
+do
+        echo $status
+        echo "One more attempt..."
+        echo ""
+        status=$(sudo service call-recording stop)
+done
+
+echo $status
+
+
+## Command output as var
+list=( $(find . -type f -exec ls -1tr {} +) ); for var in "${list[@]}"; do echo $var; done
+
+## For loop with command output as array
+for i in $(ls); do echo $i; done
+# Same
+for i in *; do echo $i; done
+
+# Batch rename
+for i in cps*; do echo $i 208.89.104.161_$i; done
+
+# awk
+find . -type f  -name '*.csv' -exec wc -l {} + | awk '{if ($1 > 100000) print $1" "$2}'

@@ -1,0 +1,62 @@
+#!/usr/bin/bash
+
+## HG Change Patch
+hg qgoto <patch_name> && hg qpop && hg qpush && hg qtop
+# patch -p1
+hg diff
+hg qrefresh
+hg diff --mq
+hg qcommit
+# hg outgoing -p --mq
+hg push --mq
+
+
+## HG Add
+hg qpop && hg qpush -a
+hg qnew porta-admin/patch_name && hg qtop
+# hg qpop && hg qrename patch_name porta-um/patch_name && hg qpush # rename patch, if needed
+# patch -p1
+hg diff
+hg qrefresh -U -e # add username and info to patch
+# hg diff --mq
+hg qcommit
+# hg outgoing -p --mq
+hg push --mq
+
+
+## HG Delete Patch
+hg qgoto <patch_name> && hg qpop && hg qpush && hg qtop
+hg qdelete <patch>
+hg diff
+hg diff --mq
+hg qcommit
+hg push --mq
+
+
+## Update at ps-X server:
+cd /porta_var/tmp/ps
+hg status
+#hg revert -a
+cd .hg/patches/ && hg pull -u && cd ../..
+hg qpop -a && hg qpush -a
+sudo cp -r .hg /home/
+
+
+# Rebase and update and serve and stuff
+hg update -r 2785 --mq
+hg rebase --mq
+hg serve --mq
+hg revert -a --mq # revert qrefreshed changes
+
+
+## HG Clone
+BRANCH=MR500600
+hg clone https://vcs.telinta.com/porta-switch/ . -b $BRANCH && \
+hg qinit && cd .hg/patches && \
+hg clone https://vcs.telinta.com/patches/ . -b $BRANCH && cd ../..
+
+
+## HG Update
+hg pull -u # Base
+hg pull -u --mq # Patches
+hg qpop -a && hg qpush -a
