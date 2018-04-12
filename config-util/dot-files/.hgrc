@@ -1,0 +1,28 @@
+[ui]
+username = Nikolay Morozov <nikolaym@telinta.com>
+
+[alias]
+latest = log --limit 5
+diff = diff --git --show-function --noprefix --nodates
+
+[auth]
+ps.prefix = vcs.telinta.com
+ps.username = nikolaym
+ps.password = 8OSipCxs
+ps.schemes = https
+
+[extensions]
+mq = 
+rebase = 
+purge = 
+
+[web]
+#cacerts =
+
+[hostfingerprints]
+#util.telinta.com = a7:da:9c:27:24:2e:06:f4:78:41:2c:6c:98:44:0e:52:8d:02:bf:0a 
+
+#[diff]
+#git = 1
+#nodates = 1
+

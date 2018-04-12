@@ -1,0 +1,38 @@
+[$Version]
+update_info=konsole.upd:2.9.0-global-options
+
+[Colors]
+CurrentPalette=Forty Colors
+
+[Desktop Entry]
+DefaultProfile=Bash.profile
+
+[Favorite Profiles]
+Favorites=Bash.profile
+
+[KFileDialog Settings]
+Height 1080=630
+Recent Files[$e]=$HOME/downloads/konsole.txt,$HOME/downloads/konsole.txt
+Recent URLs[$e]=$HOME/downloads/
+Width 1920=1008
+
+[KonsoleWindow]
+ShowAppNameOnTitleBar=false
+ShowMenuBarByDefault=false
+
+[MainWindow]
+Height 1080=1024
+MenuBar=Disabled
+State=AAAA/wAAAAD9AAAAAAAAB08AAAQbAAAABAAAAAQAAAAIAAAACPwAAAAA
+ToolBarsMovable=Disabled
+Width 1920=1871
+Window-Maximized 1080x1920=true
+
+[Notification Messages]
+CloseAllTabs=false
+ShowPasteHugeTextWarning=false
+
+[TabBar]
+TabBarUseUserStyleSheet=true
+TabBarUserStyleSheetFile=file:///home/users/nikolaym/work/konsole.css
+TabBarVisibility=ShowTabBarWhenNeeded

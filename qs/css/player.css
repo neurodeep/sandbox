@@ -1,0 +1,276 @@
+#player {
+  position: relative;
+  margin: 0 auto;
+  margin-top: 60px;
+  margin-bottom: 33px;
+  height: 740px;
+}
+
+.sc-player {
+  position: absolute;
+  top: 0px;
+  width: 1000px;
+}
+
+.sc-artwork-list {
+  display: none;
+}
+
+.sc-controls {
+  text-align: center;
+}
+
+.sc-play, .sc-back, .sc-next,
+.sc-play:hover, .sc-back:hover, .sc-next:hover {
+  color: transparent;
+  text-shadow: none;
+  display: inline-block;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.sc-back {
+  position: relative;
+  background-image: url('../img/player-back.png');
+  width: 40px;
+  height: 40px;
+  margin-right: 40px;
+  top: 50px;
+}
+
+.sc-play {
+  background-image: url('../img/player-play.png');
+  width: 142px;
+  height: 142px;
+}
+
+.sc-player.playing .sc-play {
+  background-image: url('../img/player-pause.png');
+}
+
+.sc-next {
+  position: relative;
+  background-image: url('../img/player-next.png');
+  width: 40px;
+  height: 40px;
+  margin-left: 40px;
+  top: 50px;
+}
+
+/* Seek bar */
+
+.sc-time-span {
+  position: relative;
+  height: 10px;
+  width: 800px;
+  border-radius: 5px;
+  background-color: #e2e2e2;
+  cursor: pointer;
+}
+
+.sc-waveform-container {
+  position: absolute;
+}
+
+.sc-waveform-container > img {
+  position: absolute;
+  opacity: 0;
+  width: 800px;
+  height: 10px;
+}
+
+.sc-buffer {
+  position: absolute;
+  border-radius: 5px;
+  background: #d4d4d4;
+  height: 100%;
+}
+
+.sc-played {
+  position: absolute;
+  border-radius: 5px;
+  background: #606060;
+  height: 100%;
+}
+
+.sc-scrubber {
+  width: 800px;
+  margin: 0 auto;
+  margin-top: 25px;
+}
+
+/* Volume */
+
+.sc-volume {
+  position: relative;
+  height: 25px;
+  width: 212px;
+  margin: 0 auto;
+  margin-top: 45px;
+}
+
+.volume {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.volume.active {
+  opacity: 1;
+}
+
+.volume.min {
+  float: left;
+  background-image: url('../img/player-sound-min.png');
+}
+
+.volume.mid {
+  float: left;
+  margin-left: 60px;
+  background-image: url('../img/player-sound-mid.png');
+}
+
+.volume.max {
+  float: right;
+  background-image: url('../img/player-sound-max.png');
+}
+
+/* Time */
+
+.sc-time-indicators {
+  margin-bottom: 15px;
+  height: 30px;
+}
+
+.sc-position {
+  float: left;
+}
+
+.sc-duration {
+  float: right;
+}
+
+/* Current Song */
+
+.sc-current-track span {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  left: 0;
+}
+
+/* Tracklist */
+
+.trackslist-wrapper {
+  margin-top: 45px;
+}
+
+.trackslist-wrapper.first {
+  float: left;
+}
+
+.trackslist-wrapper.second {
+  float: right;
+}
+
+.trackslist-title {
+  background: #d4d4d4;
+  width: 491px;
+  height: 64px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 300;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 64px;
+}
+
+.trackslist-wrapper.first .trackslist-title {
+  border-top-left-radius: 10px;
+}
+
+.trackslist-wrapper.second .trackslist-title {
+  border-top-right-radius: 10px;
+}
+
+.sc-trackslist {
+  width: 491px;
+  height: 313px;
+  background-color: #f1f0f0;
+  overflow: hidden;
+  list-style: none;
+  padding-top: 7px;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+
+.sc-trackslist li {
+  margin: 2px 0;
+  height: 25px;
+  margin-right: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /*background-image: url('../img/player-list-play.png');*/
+  background-repeat: no-repeat;
+  background-position: center left;
+}
+
+.sc-trackslist li * {
+  color: #898989;
+  font-size: 16px;
+}
+
+.sc-trackslist li a {
+  margin-left: 30px;
+}
+
+.sc-trackslist li span {
+  margin-left: 10px;
+}
+
+.sc-trackslist li.active {
+  background-image: url('../img/player-list-play.png');
+}
+
+.playing .sc-trackslist li.active {
+  background-image: url('../img/player-list-pause.png');
+}
+
+/* Slimscroll */
+
+.ss-wrap {
+  position: relative;
+}
+
+.ss-bar {
+  right: 0px;
+}
+
+.ss-rail {
+  position: absolute;
+  display: block;
+  width: 10px;
+  height: 100%;
+  top: 0px;
+  z-index: 90;
+  background: #e7e7e7;
+}
+
+.ss-handle {
+  position: absolute;
+  display: block;
+  height: 73px;
+  width: 10px;
+  top: 0px;
+  right: -1px;
+  z-index: 100;
+  background-image: url('../img/player-list-handle.png');
+  background-repeat: no-repeat;
+}

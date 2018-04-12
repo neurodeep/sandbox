@@ -1,0 +1,11 @@
+shell -/var/tmp/nikolaym/bash
+vbell off
+startup_message off
+altscreen on
+defscrollback 10000
+defutf8 on
+bindkey -k k5 prev
+bindkey -k k6 next
+termcapinfo xterm*|rxvt ti@:te@
+hardstatus off
+hardstatus alwayslastline '%{= G}%{g}[ %{G}%H %{g}][ %{.W}%-w%{.gW}%n %t%{-}%+w %= %{..W} %{g} ][ %{y}Load: %l %{g}][%{B}%Y-%m-%d %{W}%c:%s %{g}]'

@@ -1,0 +1,158 @@
+#!/bin/bash
+
+cert() {
+  ACTION=${1:-}
+  HOST=${2%%:*}
+  PORT=${2//*[!0-9]/}
+  FILE=${2:-}
+  NAME=${3:-$HOST}
+  NEWNAME=${3:-}
+
+  read -r -d '' USAGE << EOM
+    Usage:
+    cert add host[:port]|filename [certname]
+    cert list
+    cert show certname
+    cert rename certname newname
+    cert remove certname
+EOM
+
+  CERTUTIL="certutil -d sql:${HOME}/.pki/nssdb"
+
+  if ! [[ -n "$ACTION" && "$ACTION" =~ ^(add|list|show|rename|remove)$ ]] || [[ ! "$ACTION" == "list" && ! -n "$NAME" ]]; then
+    echo "${USAGE}" && return 1
+  fi
+
+  if [[ "$ACTION" == "add" && ! -f "$FILE" ]]; then
+    echo "Getting certificate..."
+
+    # https://www.systutorials.com/50204/making-chrome-accept-self-signed-certificates-on-linux/
+    echo QUIT \
+    | openssl s_client -servername "${HOST}" -connect "${HOST}:${PORT}" -showcerts 2>null \
+    | sed -ne '/BEGIN CERT/,/END CERT/p' \
+    > /tmp/cert-${HOST} \
+    && echo "Success" || echo "Failure"
+
+    FILE="/tmp/cert-${HOST}"
+  fi
+
+  case $ACTION in
+    add)
+      echo "Adding certificate..."
+      $CERTUTIL -A -t "P,," -n "${NAME}" -i "${FILE}" \
+      && echo "Success" || echo "Failure"
+      # $CERTUTIL -A -t "C,," -n "${NAME}" -i "${FILE}" && echo "Success"
+      # $CERTUTIL -A -t "PCT,PCT,PCT" -n "${NAME}" -i "${FILE}" && echo "Success"
+      ;;
+    list)
+      echo "Installed certificates:"
+      $CERTUTIL -L
+      ;;
+    show)
+      echo "${NAME} details:"
+      $CERTUTIL -L -n "${NAME}"
+      ;;
+    rename)
+      echo "Renaming certificate ${NAME} to ${NEWNAME}..."
+      $CERTUTIL --rename -n "${NAME}" --new-n "${NEWNAME}" \
+      && echo "Success" || echo "Failure"
+      ;;
+    remove)
+      echo "Removing certificate ${NAME}"
+      $CERTUTIL -D -n "${NAME}" \
+      && echo "Success" || echo "Failure"
+      ;;
+  esac
+}
+
+remote_setup () {
+  for i in "$@"; do
+    ssh $i mkdir -p /var/tmp/nikolaym
+    scp $HOME/{scripts/bash,.{bash{rc,_alias,_function},dircolors,screenrc,vimrc,inputrc}} $i:/var/tmp/nikolaym/
+    ssh $i chmod u+x /var/tmp/nikolaym/bash
+  done
+}
+
+smount () {
+  for i in "$@"; do
+    if [ -n "$i" ] ; then
+      MOUNT="/tmp/$USER/$i"
+
+      mount | grep $MOUNT >/dev/null
+      if [ $? == 0 ]; then
+        echo "$i is already mounted"
+        continue
+      fi
+
+      if [ ! -d "$MOUNT" ] ; then
+        mkdir -p "$MOUNT"
+      fi
+
+      sshfs $i:/ $MOUNT
+    else
+      echo "Need a hostname to mount."
+    fi
+  done
+}
+
+usmount () {
+  for i in "$@"; do
+    if [ -n "$i" ] ; then
+      MOUNT=/tmp/${USER}/${i}/
+      fusermount -u "$MOUNT"
+    else
+      echo "Need a mountpoint."
+    fi
+  done
+}
+
+coin () {
+  HEADS="${1:-Heads}"
+  TAILS="${2:-Tails}"
+  [ "$((RANDOM%2))" -gt "0" ] && echo "$HEADS" || echo "$TAILS"
+}
+
+dice () {
+  DICE=($@)
+  LENGTH=${#DICE[@]}
+  SEED=$((RANDOM%LENGTH))
+  echo "${DICE[${SEED}]}"
+}
+
+altab () {
+  WINDOWS=($(wmctrl -l | grep -v '\-1' | cut -d ' ' -f 1))
+  LENGTH=${#WINDOWS[@]}
+
+  while true
+  do
+    SEED=$((RANDOM%LENGTH))
+    sleep $((RANDOM%60))
+    wmctrl -i -a "${WINDOWS[${SEED}]}"
+  done
+}
+
+extract () {
+  if [ -f "$1" ] ; then
+    case "$1" in
+      *.tar.bz2)  tar xjf "$1"                  ;;
+      *.tar.gz) tar xzf "$1"                  ;;
+      *.bz2)    bunzip2 "$1"                  ;;
+      *.rar)    rar x "$1"                    ;;
+      *.gz)   gunzip "$1"                   ;;
+      *.tar)    tar xf "$1"                   ;;
+      *.tbz2)   tar xjf "$1"                  ;;
+      *.tgz)    tar xzf "$1"                  ;;
+      *.zip)    unzip "$1"                    ;;
+      *.Z)    uncompress "$1"                 ;;
+      *.rpm)    7z e "$1" -otmp && 7z x tmp/* -o* && rm -r tmp  ;;
+      *.deb)    dpkg -X "$1" "${1%".deb"}"            ;;
+      *)      echo "'${1}' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'${1}' is not a valid file"
+  fi
+}
+
+grab() {
+  sudo chown -R "${USER}" "${1:-.}"
+}

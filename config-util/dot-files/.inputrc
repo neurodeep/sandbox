@@ -1,0 +1,26 @@
+# History search
+"\e[A": history-search-backward
+"\e[5~": history-search-backward
+"\e[B": history-search-forward
+"\e[6~": history-search-forward
+
+# Jump words
+# "^G": end-of-line
+# "^G": forward-word
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+
+# # Color files by types
+set colored-stats On
+
+# # Append char to indicate type
+set visible-stats On
+
+# # Mark symlinked directories
+set mark-symlinked-directories On
+
+# # Color the common prefix
+set colored-completion-prefix On
+
+# # Color the common prefix in menu-complete
+set menu-complete-display-prefix On

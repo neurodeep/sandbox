@@ -1,0 +1,17 @@
+QWidget, QTabWidget::pane, QTabWidget::tab-bar, QTabBar::tab {
+  font-family: "Source Sans Pro, Sans";
+  background-color: palette(window-text);
+  color: palette(highlighted-text);
+  padding: 0 3px 3px 3px;
+  border: 0px;
+  border-top: 3px solid palette(window-text);
+}
+
+QTabBar::tab:selected {
+  background-color: palette(highlight);
+  border-top: 3px solid palette(highlight);
+}
+
+QTabBar::tab:hover {
+  border-top: 3px solid palette(highlight);
+}

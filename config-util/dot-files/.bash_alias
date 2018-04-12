@@ -1,0 +1,90 @@
+#!/bin/bash
+
+ssh() {
+  command ssh -v $@
+}
+
+ls() {
+  command ls -F --color=auto $@
+}
+
+ll() {
+  command ls -hlF --color=auto $@
+}
+
+la() {
+  command ls -hlAF --color=auto $@
+}
+
+grep() {
+  command grep --color=auto $@
+}
+
+df() {
+  command df -h $@
+}
+
+start() {
+  dbus-launch startx
+}
+
+xo() {
+  xdg-open $@
+}
+
+logout() {
+  killall -u $USER
+  exit
+}
+
+rl() {
+  command readlink -f $@
+}
+
+chmodw() {
+  command chmod a+w $@
+}
+
+vim() {
+  command vim -u $DIR/.vimrc $@
+}
+
+# Server Autologin
+for i in psa psb psc psd pse psf psg psh psi psj psk psm psn pso psp tla tlb apps webrtc callshop; do
+  alias $i="ssh $i -t 'screen -c /var/tmp/nikolaym/.screenrc -dRRS nikolaym'"
+done
+
+source() {
+  if [[ -z "$1" ]]; then
+    command source $DIR/.bashrc
+  else
+    command source $@
+  fi
+}
+
+st() {
+  if type subl >/dev/null 2>&1; then
+    command subl $@
+  else
+    command vim $@
+  fi
+}
+
+sudo() {
+  if [[ $1 == "vim" || $1 == "st" ]]; then
+    command sudo $@ -u $DIR/.vimrc
+  else
+    command sudo $@
+  fi
+}
+
+hg() {
+  if [[ $1 == "qgoto" ]]; then
+    command hg $@
+    if [[ $? -eq 2 ]]; then # exit 2 == errors during apply
+      hg $@
+    fi
+  else
+    command hg $@
+  fi
+}

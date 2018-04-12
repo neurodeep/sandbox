@@ -1,0 +1,166 @@
+/**
+ * General
+ */
+
+body {
+  position: relative;
+  min-height: 100%;
+  z-index: -3;
+  font-family: "Open Sans", Arial, sans-serif;
+  text-shadow: rgba(0,0,0,0.1) 0 0 1px;
+}
+
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+#preload {
+  display: none;
+}
+
+/**
+ * Header
+ */
+
+#header {
+  position: relative;
+  z-index: -2;
+  height: 403px;
+  background-image: url('../img/header-background.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-color: #201e1f;
+}
+
+.nav > li {
+  vertical-align: top;
+}
+
+.nav > li > a {
+  font-size: 16px;
+  color: #666;
+  height: 66px;
+  margin-top: 9px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 150px;
+}
+
+.nav > li > a:hover {
+  color: #e3e4e6;
+  background-color: transparent;
+}
+
+.nav > li > a:hover::before {
+  content: " ";
+  position: absolute;
+  z-index: -1;
+  width: 485px;
+  height: 40px;
+  top: 0px;
+  right: -150px;
+  background-image: url('../img/header-menu-hover.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+.nav > li > a > span {
+  line-height: 40px;
+}
+
+.buffer {
+  width: 500px;
+  height: 165px;
+  margin-top: 9px;
+  display: inline-block;
+}
+
+.buffer:hover {
+  background-image: url('../img/header-logo-hover.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+/**
+ * Content
+ */
+
+.content {
+  width: 1000px;
+  min-height: 100%;
+  padding: 40px 0;
+  font-weight: 300;
+  font-size: 18px;
+  color: #606060;
+}
+
+.content p {
+  text-align: center;
+}
+
+/**
+ * Footer
+ */
+
+#footer {
+  height: 110px;
+  background-color: #000;
+}
+
+#footer > .top {
+	background-image: url('../img/footer-top.png');
+	height: 35px;
+	position: relative;
+	top: -10px;
+}
+
+#footer > img {
+  position: relative;
+  bottom: 18px;
+}
+
+#footer-social {
+  margin-top: 2px;
+  margin-right: 14px;
+}
+
+#footer-social > li {
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
+#footer-copyright {
+  margin-left: 13px;
+  margin-top: -10px;
+  display: inline-block;
+  padding: 20px 110px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #9c9b9b;
+  background-image: url('../img/footer-logo.png');
+  background-position: center left;
+  background-repeat: no-repeat;
+}
+
+#footer-copyright a {
+  color: #9c9b9b;
+}
+
+.language {
+  background-color: #9c9b9b;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  text-align: center;
+}
+
+.language a {
+  color: #000;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.language a:hover {
+  text-decoration: none;
+}
